@@ -1,29 +1,34 @@
 from os import environ, path
-from socket import socketpair
+from socket import AF_INET, SOCK_STREAM, socket
 
 
 class SocketClient:
-    def __init__(self):
-        self._client_socket = self._socket_connect()
 
     def send_file(self, filepath: str) -> None:
-        file_extension = self._get_file_extension(filepath=filepath)
-        self._client_socket.send(file_extension)
+        with socket(AF_INET, SOCK_STREAM) as sock:
+            sock.connect(
+                (environ.get("SERVER_HOST"), int(environ.get("SERVER_PORT")))
+            )
 
-        with open(filepath, "rb") as f:
-            bytes_read = f.read()
+            file_extension = self._get_file_extension(filepath=filepath)
+            sock.send(file_extension.encode())
 
-        self._client_socket.sendall(bytes_read)
+            with open(filepath, "rb") as f:
+                bytes_read = f.read()
+
+            sock.sendall(bytes_read)
 
         print("[✔] File sent successfully.")
-        self._client_socket.close()
 
     def _get_file_extension(self, filepath: str) -> str:
         filename = path.basename(filepath)
-        return path.splitext(filename)[1][1:]
+        return path.splitext(filename)[1][1:] + ";"
 
-    def _socket_connect(self) -> None:
-        client_socket = socketpair()
-        return client_socket.create_connection(
-            (environ.get("SERVER_HOST"), int(environ.get("SERVER_PORT")))
-        )
+
+if __name__ == "__main__":
+    socket_client = SocketClient()
+    socket_client.send_file(filepath="public/file.json")
+    socket_client.send_file(filepath="public/file.xml")
+    socket_client.send_file(filepath="public/file.csv")
+    socket_client.send_file(filepath="public/file.toml")
+    socket_client.send_file(filepath="public/file.yml")

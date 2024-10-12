@@ -11,7 +11,7 @@ class SocketClientTest(TestCase):
         mock_socket.create_connection.return_value = None
         sut = SocketClient()
         response = sut._get_file_extension("fake.json")
-        self.assertEqual(response, ".json")
+        self.assertEqual(response, "json")
 
     @patch("builtins.open")
     @patch.object(SocketClient, "_socket_connect")
@@ -31,7 +31,7 @@ class SocketClientTest(TestCase):
         sut = SocketClient()
         sut.send_file("fake.json")
 
-        mock_client_socket.send.assert_called_with(".json")
+        mock_client_socket.send.assert_called_with("json")
         mock_client_socket.sendall.assert_called_with(b"fake_content")
 
         mock_client_socket.close.assert_called_once()

@@ -5,7 +5,6 @@ from socket import socketpair
 class SocketClient:
     def __init__(self):
         self._client_socket = self._socket_connect()
-        print(self._client_socket)
 
     def send_file(self, filepath: str) -> None:
         file_extension = self._get_file_extension(filepath=filepath)
@@ -21,7 +20,7 @@ class SocketClient:
 
     def _get_file_extension(self, filepath: str) -> str:
         filename = path.basename(filepath)
-        return path.splitext(filename)[1]
+        return path.splitext(filename)[1][1:]
 
     def _socket_connect(self) -> None:
         client_socket = socketpair()

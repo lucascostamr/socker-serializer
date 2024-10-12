@@ -9,8 +9,8 @@ RUN apt-get upgrade\
 
 ENV PYTHONPATH="./src"
 
-RUN adduser user\
-    && chown -R user:user /app
+RUN adduser --disabled-password --gecos '' user\
+    && chmod -R 777 /app
 
 USER user
 
